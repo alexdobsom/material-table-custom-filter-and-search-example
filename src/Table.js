@@ -11,6 +11,74 @@ export default function Table() {
     console.log("searchTerm", searchTerm);
   }, [searchTerm]);
 
+  function customFilterAndSearch(
+    value, // value of the column filter input / table search input, should come from the table's `customFilterAndSearch`
+    rowData, // data of a table row, should come from table's `customFilterAndSearch`
+    columnName, // name of the table column field
+    filtersArray, // all the filters saved from table in a react state -> `useState([])`
+    searchTerm, // value of the table search input saved in a react state -> `useState("")`
+    lookupKeys = [], // array of strings; the fields that should be searched for `searchTerm`, example: ["name", "surname", "birth"]
+    FILTER_CONDITION // the condition for Filter to return `true` as in accepted row for display
+  ) {
+    console.log(value, rowData, columnName);
+
+    if (lookupKeys.length === 0) lookupKeys = [...rowData];
+
+    // CONDITION FOR FILTER SEARCH:
+    const columFilterValue = filtersArray.find(
+      (filter) => filter.column.field === columnName
+    )?.value;
+
+    if (columFilterValue) {
+      // FLTER SEARCH
+      let searchTermIsFoundInRow = null;
+
+      lookupKeys.forEach((key) => {
+        if (typeof rowData[key] === "string") {
+          const isTrue = rowData[key].includes(searchTerm);
+          if (isTrue) {
+            return (searchTermIsFoundInRow = rowData[key]);
+          }
+        }
+        if (typeof rowData[key] === "number") {
+          const isTrue = rowData[key].toString().includes(searchTerm);
+          if (isTrue) {
+            return (searchTermIsFoundInRow = rowData[key]);
+          }
+        }
+        if (typeof rowData[key] === "object") {
+          const isTrue = Object.keys(rowData[key])
+            .map((key) => rowData[key][key])
+            .join("")
+            .includes(searchTerm);
+          if (isTrue) {
+            return (searchTermIsFoundInRow = rowData[key]);
+          }
+        }
+        if (Array.isArray(rowData[key])) {
+          const isTrue = rowData[key].includes(searchTerm);
+          if (isTrue) {
+            return (searchTermIsFoundInRow = rowData[key]);
+          }
+        }
+      });
+
+      // examples of FILTER_CONDITION:
+      // rowData[columnName].includes(value);
+      // or
+      // rowData[columnName].length > value.length;
+
+      const conditionForFilteringisTrue =
+        searchTermIsFoundInRow && FILTER_CONDITION;
+
+      return conditionForFilteringisTrue ? true : false;
+    } else {
+      // TABLE SEARCH
+      const conditionForSearch = rowData[columnName].includes(searchTerm);
+      return conditionForSearch ? true : false;
+    }
+  }
+
   return (
     <div style={{ maxWidth: "100%" }}>
       <MaterialTable
@@ -34,79 +102,18 @@ export default function Table() {
             defaultFilter: filtersArray.find(
               (filter) => filter.column.field === "name"
             )?.value,
-            customFilterAndSearch: (value, rowData) => {
-              console.log(value, rowData);
-
-              // CONDITION FOR FILTER SEARCH:
-              const columFilterValue = filtersArray.find(
-                (filter) => filter.column.field === "name"
-              )?.value;
-
-              if (columFilterValue) {
-                // FLTER SEARCH
-                let searchTermIsFound = null;
-
-                const lookupKeys = ["name", "surname", "birth"];
-
-                lookupKeys.forEach((key) => {
-                  if (typeof rowData[key] === "string") {
-                    const isTrue = rowData[key].includes(searchTerm);
-                    if (isTrue) {
-                      return (searchTermIsFound = rowData[key]);
-                    }
-                  }
-                  if (typeof rowData[key] === "number") {
-                    const isTrue = rowData[key].toString().includes(searchTerm);
-                    if (isTrue) {
-                      return (searchTermIsFound = rowData[key]);
-                    }
-                  }
-                  if (typeof rowData[key] === "object") {
-                    const isTrue = Object.keys(rowData[key])
-                      .map((key) => rowData[key][key])
-                      .join("")
-                      .includes(searchTerm);
-                    if (isTrue) {
-                      return (searchTermIsFound = rowData[key]);
-                    }
-                  }
-                  if (Array.isArray(rowData[key])) {
-                    const isTrue = rowData[key].includes(searchTerm);
-                    if (isTrue) {
-                      return (searchTermIsFound = rowData[key]);
-                    }
-                  }
-                });
-
-                const conditionForFilteringIsTrue =
-                  searchTermIsFound &&
-                  rowData.name.length > columFilterValue.length;
-
-                return conditionForFilteringIsTrue ? true : false;
-              } else {
-                // TABLE SEARCH
-                const conditionForSearchIsTrue =
-                  rowData.name.includes(searchTerm);
-
-                return conditionForSearchIsTrue ? true : false;
-              }
+            customFilterAndSearch: function (value, rowData) {
+              return customFilterAndSearch(
+                value,
+                rowData,
+                this.field,
+                filtersArray,
+                searchTerm,
+                ["name", "surname", "birth"],
+                rowData[this.field].includes(value)
+              );
             },
           },
-          // {
-          //   title: "Name",
-          //   field: "name",
-          //   customFilterAndSearch: (value, rowData) => {
-          //     console.log(
-          //       searchTerm,
-          //       value,
-          //       rowData,
-          //       rowData.name,
-          //       rowData.name.indexOf(searchTerm)
-          //     );
-
-          //     return rowData["name"].indexOf(searchTerm) !== -1 ? true : false;
-          //   },
-          // },
           {
             title: "Surname",
             field: "surname",
@@ -136,7 +143,7 @@ export default function Table() {
             // city: 2,
           },
           {
-            name: "aaa",
+            name: "aaab",
             surname: "bb",
             birth: 1900,
             // city: 1,

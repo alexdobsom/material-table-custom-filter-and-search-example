@@ -13,11 +13,19 @@ export default function Table() {
   return (
     <div style={{ maxWidth: "100%" }}>
       <MaterialTable
+        options={{
+          filtering: true,
+        }}
         onSearchChange={(term) => console.log(term)}
         columns={[
-          { title: "Adı", field: "name" },
-          { title: "Soyadı", field: "surname" },
-          { title: "Doğum Yılı", field: "birthYear", type: "numeric" },
+          { title: "Adı", field: "name", filtering: true },
+          { title: "Soyadı", field: "surname", filtering: true },
+          {
+            title: "Doğum Yılı",
+            field: "birthYear",
+            type: "numeric",
+            filtering: true,
+          },
           {
             title: "Doğum Yeri",
             field: "birthCity",
@@ -26,6 +34,8 @@ export default function Table() {
         ]}
         data={[
           { name: "Mehmet", surname: "Baran", birthYear: 1987, birthCity: 63 },
+          { name: "Mehmet", surname: "Baran", birthYear: 1987, birthCity: 63 },
+          { name: "Mehmet", surname: "Baran", birthYear: 1917, birthCity: 63 },
         ]}
         title="Demo Title"
       />

@@ -45,18 +45,18 @@ export default function Table() {
           return (searchTermIsFoundInRow = fieldValue);
         }
       }
-      if (typeof fieldValue === "object") {
-        const isTrue = Object.keys(fieldValue)
-          .map((field) => fieldValue[field].toLowerCase())
-          .join("")
+      if (Array.isArray(fieldValue)) {
+        const isTrue = fieldValue
+          .map((field) => field.toLowerCase())
           .includes(searchTerm.toLowerCase());
         if (isTrue) {
           return (searchTermIsFoundInRow = fieldValue);
         }
       }
-      if (Array.isArray(fieldValue)) {
-        const isTrue = fieldValue
-          .map((field) => field.toLowerCase())
+      if (typeof fieldValue === "object") {
+        const isTrue = Object.keys(fieldValue)
+          .map((field) => fieldValue[field].toLowerCase())
+          .join("")
           .includes(searchTerm.toLowerCase());
         if (isTrue) {
           return (searchTermIsFoundInRow = fieldValue);
@@ -145,49 +145,65 @@ export default function Table() {
               );
             },
           },
-          // {
-          //   title: "Age",
-          //   field: "age",
-          //   type: "numeric",
-          //   defaultFilter: filtersArray.find(
-          //     (filter) => filter.column.field === "age"
-          //   )?.value,
-          //   customFilterAndSearch: function (value, rowData) {
-          //     return customFilterAndSearch(
-          //       value,
-          //       rowData,
-          //       this.field,
-          //       filtersArray,
-          //       searchTerm,
-          //       ["name", "surname", "age"],
-          //       rowData[this.field].toString().includes(value)
-          //     );
-          //   },
-          // },
-          //   {
-          //     title: "City",
-          //     field: "city",
-          //     lookup: { 1: "Arad", 2: "Timisoara" },
-          //   },
+          {
+            title: "Age",
+            field: "age",
+            type: "numeric",
+            defaultFilter: filtersArray.find(
+              (filter) => filter.column.field === "age"
+            )?.value,
+            customFilterAndSearch: function (value, rowData) {
+              return customFilterAndSearch(
+                value,
+                rowData,
+                this.field,
+                filtersArray,
+                searchTerm,
+                ["name", "surname", "age"],
+                rowData[this.field].toString().includes(value)
+              );
+            },
+          },
+          {
+            title: "City",
+            field: "city",
+            lookup: { 1: "Arad", 2: "Timisoara" },
+            defaultFilter: filtersArray.find(
+              (filter) => filter.column.field === "city"
+            )?.value,
+            customFilterAndSearch: function (value, rowData) {
+              return customFilterAndSearch(
+                value,
+                rowData,
+                this.field,
+                filtersArray,
+                searchTerm,
+                ["name", "surname", "age"],
+                value.length
+                  ? value.includes(rowData[this.field].toString())
+                  : true
+              );
+            },
+          },
         ]}
         data={[
           {
             name: "aa",
             surname: "Baran",
-            age: 1987,
-            // city: 1,
+            age: 1980,
+            city: 1,
           },
           {
             name: "ehm",
             surname: "abaa",
             age: 1980,
-            // city: 2,
+            city: 2,
           },
           {
             name: "aaab",
             surname: "bb",
             age: 1900,
-            // city: 1,
+            city: 1,
           },
         ]}
         title="Demo Title"

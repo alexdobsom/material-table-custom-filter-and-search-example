@@ -112,9 +112,14 @@ export default function Table() {
             field: "name",
             filtering: true,
             searchable: true,
-            defaultFilter: filtersArray.find(
-              (filter) => filter.column.field === "name"
-            )?.value,
+            // defaultFilter: filtersArray.find(
+            //   (filter) => filter.column.field === "name"
+            // )?.value,
+            get defaultFilter() {
+              return filtersArray.find(
+                (filter) => filter.column.field === this.field
+              )?.value;
+            },
             customFilterAndSearch: function (value, rowData) {
               return customFilterAndSearch(
                 value,
@@ -130,9 +135,11 @@ export default function Table() {
           {
             title: "Surname",
             field: "surname",
-            defaultFilter: filtersArray.find(
-              (filter) => filter.column.field === "surname"
-            )?.value,
+            get defaultFilter() {
+              return filtersArray.find(
+                (filter) => filter.column.field === this.field
+              )?.value;
+            },
             customFilterAndSearch: function (value, rowData) {
               return customFilterAndSearch(
                 value,
@@ -149,9 +156,11 @@ export default function Table() {
             title: "Age",
             field: "age",
             type: "numeric",
-            defaultFilter: filtersArray.find(
-              (filter) => filter.column.field === "age"
-            )?.value,
+            get defaultFilter() {
+              return filtersArray.find(
+                (filter) => filter.column.field === this.field
+              )?.value;
+            },
             customFilterAndSearch: function (value, rowData) {
               return customFilterAndSearch(
                 value,
@@ -168,9 +177,11 @@ export default function Table() {
             title: "City",
             field: "city",
             lookup: { 1: "Arad", 2: "Timisoara" },
-            defaultFilter: filtersArray.find(
-              (filter) => filter.column.field === "city"
-            )?.value,
+            get defaultFilter() {
+              return filtersArray.find(
+                (filter) => filter.column.field === this.field
+              )?.value;
+            },
             customFilterAndSearch: function (value, rowData) {
               return customFilterAndSearch(
                 value,

@@ -41,8 +41,8 @@ export default function Table() {
                 this.field,
                 filtersArray,
                 searchTerm,
-                ["name", "surname", "age"],
-                rowData[this.field]?.toLowerCase().includes(value.toLowerCase())
+                ["name", "surname", "age", "city"],
+                rowData[this.field].length > value.length
               );
             },
           },
@@ -59,7 +59,7 @@ export default function Table() {
                 this.field,
                 filtersArray,
                 searchTerm,
-                ["name", "surname", "age"],
+                ["name", "surname", "age", "city"],
                 rowData[this.field].toLowerCase().includes(value.toLowerCase())
               );
             },
@@ -78,7 +78,7 @@ export default function Table() {
                 this.field,
                 filtersArray,
                 searchTerm,
-                ["name", "surname", "age"],
+                ["name", "surname", "age", "city"],
                 rowData[this.field].toString().includes(value)
               );
             },
@@ -97,7 +97,7 @@ export default function Table() {
                 this.field,
                 filtersArray,
                 searchTerm,
-                ["name", "surname", "age"],
+                ["name", "surname", "age", "city"],
                 value.length
                   ? value.includes(rowData[this.field].toString())
                   : true

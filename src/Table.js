@@ -30,7 +30,7 @@ export default function Table() {
         }}
         columns={[
           {
-            title: "Names",
+            title: "Name",
             field: "name",
             filtering: true,
             searchable: true,
@@ -134,7 +134,7 @@ export default function Table() {
             city: 1,
           },
         ]}
-        title="Demo Title"
+        title="Demo Table"
       />
     </div>
   );

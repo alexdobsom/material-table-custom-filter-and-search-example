@@ -4,7 +4,7 @@ import Table from "./Table";
 
 function App() {
   return (
-    <div className="App">
+    <div className="App" data-testid="table">
       <Table />
     </div>
   );

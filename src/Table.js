@@ -1,14 +1,16 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import MaterialTable from "material-table";
 import { customFilterAndSearch } from "material-table-custom-filter-and-search";
 import { tableIcons } from "./icons";
 
 export default function Table() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filtersArray, setFiltersArray] = useState([]);
+  const searchTerm = useRef("");
+  const filtersArray = useRef();
 
   function defaultFilter(field) {
-    return filtersArray?.find((filter) => filter.column.field === field)?.value;
+    // if (!filtersArray.length) return;
+    return filtersArray.current?.find((filter) => filter.column.field === field)
+      ?.value;
   }
 
   return (
@@ -16,11 +18,12 @@ export default function Table() {
       <MaterialTable
         icons={tableIcons}
         onFilterChange={(filters) => {
-          setFiltersArray([...filters]);
+          console.log("filters: ", filters);
+          filtersArray.current = [...filters];
         }}
         onSearchChange={(term) => {
-          console.log(term);
-          setSearchTerm(term);
+          console.log("term: ", term);
+          searchTerm.current = term;
         }}
         options={{
           filtering: true,
@@ -39,10 +42,10 @@ export default function Table() {
                 value,
                 rowData,
                 this.field,
-                filtersArray,
-                searchTerm,
+                filtersArray.current,
+                searchTerm.current,
                 ["name", "surname", "age", "city"],
-                rowData[this.field].length > value.length
+                rowData[this.field].toLowerCase().includes(value.toLowerCase())
               );
             },
           },
@@ -57,8 +60,8 @@ export default function Table() {
                 value,
                 rowData,
                 this.field,
-                filtersArray,
-                searchTerm,
+                filtersArray.current,
+                searchTerm.current,
                 ["name", "surname", "age", "city"],
                 rowData[this.field].toLowerCase().includes(value.toLowerCase())
               );
@@ -72,14 +75,20 @@ export default function Table() {
               return defaultFilter(this.field);
             },
             customFilterAndSearch: function (value, rowData) {
+              console.log(
+                Number(rowData[this.field]),
+                Number(value),
+                Number(rowData[this.field]) >= Number(value)
+              );
               return customFilterAndSearch(
                 value,
                 rowData,
                 this.field,
-                filtersArray,
-                searchTerm,
+                filtersArray.current,
+                searchTerm.current,
                 ["name", "surname", "age", "city"],
-                rowData[this.field].toString().includes(value)
+                Number(rowData[this.field]) >= Number(value),
+                true
               );
             },
           },
@@ -95,8 +104,8 @@ export default function Table() {
                 value,
                 rowData,
                 this.field,
-                filtersArray,
-                searchTerm,
+                filtersArray.current,
+                searchTerm.current,
                 ["name", "surname", "age", "city"],
                 value.length
                   ? value.includes(rowData[this.field].toString())

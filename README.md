@@ -5,3 +5,7 @@
 ## Repo
 
 https://github.com/alexdobsom/material-table-custom-filter-and-search
+
+## How to use
+
+[See code example](src/Table.js)

@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import MaterialTable from "material-table";
 import { customFilterAndSearch } from "material-table-custom-filter-and-search";
 import { tableIcons } from "./icons";
+import data from "./data";
 
 export default function Table() {
   const searchTerm = useRef("");
@@ -16,6 +17,9 @@ export default function Table() {
   return (
     <div style={{ maxWidth: "100%" }}>
       <MaterialTable
+        onChangePage={(page, pageSize) =>
+          console.log("page", page, "pageSize", pageSize)
+        }
         icons={tableIcons}
         onFilterChange={(filters) => {
           console.log("filters: ", filters);
@@ -114,26 +118,7 @@ export default function Table() {
             },
           },
         ]}
-        data={[
-          {
-            name: "Ana Belle",
-            surname: "Sarandon",
-            age: 22,
-            city: 1,
-          },
-          {
-            name: "Anabel",
-            surname: "Smith",
-            age: 23,
-            city: 2,
-          },
-          {
-            name: "Belmondo",
-            surname: "Johnny",
-            age: 33,
-            city: 1,
-          },
-        ]}
+        data={data}
         title="Demo Table"
       />
     </div>

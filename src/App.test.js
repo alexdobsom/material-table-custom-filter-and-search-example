@@ -38,12 +38,16 @@ import App from "./App";
 // });
 
 describe("suite of test to match row results based on search", () => {
-  test("type 'an' into search box and get 2 rows as results", async () => {
+  test("type 'an ' into search box and get 2 rows as results", async () => {
     const user = userEvent.setup();
     render(<App />);
 
     const input = screen.getByRole("textbox", {
       name: /search/i,
+    });
+
+    const filter = screen.getByRole("searchbox", {
+      name: /filter data by name/i,
     });
 
     await user.click(input);
@@ -53,36 +57,71 @@ describe("suite of test to match row results based on search", () => {
       expect(input).toHaveValue("a");
     });
 
+    await user.keyboard(" ");
+
     await user.keyboard("n");
 
-    await waitFor(async () => {
-      const input = await screen.findByRole("textbox", {
-        name: /search/i,
-      });
-
-      expect(input).toHaveValue("an");
+    await waitFor(() => {
+      expect(input).toHaveValue("a n");
     });
 
+    await user.click(filter);
+    await user.keyboard("x");
+    await user.keyboard("{BackSpace}");
+
     await waitFor(
-      async () => {
-        expect(
-          await screen.findByRole("row", {
-            name: /belmondo/i,
-          })
-        ).toThrow();
+      () => {
+        expect(filter).toHaveValue("");
       },
       { timeout: 3000 }
     );
 
+    // await waitForElementToBeRemoved(() =>
+    //   screen.queryByRole("row", {
+    //     name: /belmondo/i,
+    //   })
+    // );
+
+    await waitFor(
+      () => {
+        expect(
+          screen.queryByRole("row", {
+            name: /belmondo/i,
+          })
+        ).not.toBeInTheDocument();
+      },
+      { timeout: 3000 }
+    );
+
+    // await waitFor(() =>
+    //   expect(
+    //     screen.getByRole("row", {
+    //       name: /belmondo/i,
+    //     })
+    //   ).toBeVisible()
+    // );
+
+    // const row = screen.queryByRole("row", {
+    //   name: /belmondo/i,
+    // });
+
+    // expect(row).not.toBeInTheDocument();
+
+    // await waitFor(
+    //   async () =>
+    //     screen.findByRole("row", {
+    //       name: /belmondo/i,
+    //     }),
+    //   { timeout: 3000 }
+    // );
+
     // eslint-disable-next-line testing-library/no-debugging-utils
     // await waitFor(() => screen.debug(), { timeout: 3000 });
 
-    // await waitForElementToBeRemoved(
-    //   () =>
-    //     screen.queryByRole("row", {
-    //       name: /belmondo/i,
-    //     })
-    //   // { timeout: 30000 }
+    // await waitForElementToBeRemoved(() =>
+    //   screen.queryByRole("row", {
+    //     name: /belmondo/i,
+    //   })
     // );
 
     //   expect(
@@ -96,10 +135,5 @@ describe("suite of test to match row results based on search", () => {
     //       name: /anabel/i,
     //     })
     //   ).toBeInTheDocument();
-
-    // const row = screen.queryByRole("row", {
-    //   name: /belmondo/i,
-    // });
-    // expect(row).not.toBeInTheDocument();
   });
 });

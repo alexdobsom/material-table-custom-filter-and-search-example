@@ -17,7 +17,7 @@ export default function Table() {
   return (
     <div style={{ maxWidth: "100%" }}>
       <MaterialTable
-        onChangePage={(page, pageSize) =>
+        onPageChange={(page, pageSize) =>
           console.log("page", page, "pageSize", pageSize)
         }
         icons={tableIcons}

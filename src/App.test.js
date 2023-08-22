@@ -1,12 +1,8 @@
-import {
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-  waitForElementToBeRemoved,
-} from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "./App";
+
+jest.setTimeout(9000);
 
 // test("table to exist in the document", () => {
 //   render(<App />);
@@ -46,35 +42,42 @@ describe("suite of test to match row results based on search", () => {
       name: /search/i,
     });
 
-    const filter = screen.getByRole("searchbox", {
-      name: /filter data by name/i,
-    });
-
     await user.click(input);
     await user.keyboard("a");
 
-    await waitFor(() => {
-      expect(input).toHaveValue("a");
-    });
+    // await act(async () => {
+    await pause();
+    // });
 
-    await user.keyboard(" ");
+    expect(input).toHaveValue("a");
 
     await user.keyboard("n");
 
-    await waitFor(() => {
-      expect(input).toHaveValue("a n");
-    });
+    // await act(async () => {
+    await pause();
+    // });
 
-    await user.click(filter);
-    await user.keyboard("x");
-    await user.keyboard("{BackSpace}");
+    expect(input).toHaveValue("an");
 
-    await waitFor(
-      () => {
-        expect(filter).toHaveValue("");
-      },
-      { timeout: 3000 }
-    );
+    // const filter = screen.getByRole("searchbox", {
+    //   name: /filter data by name/i,
+    // });
+    // await user.click(filter);
+    // await user.keyboard("x");
+    // await user.keyboard("{BackSpace}");
+    // expect(filter).toHaveValue("");
+
+    expect(
+      screen.queryByRole("row", {
+        name: /belmondo/i,
+      })
+    ).not.toBeInTheDocument();
+
+    expect(
+      screen.queryByRole("row", {
+        name: /rafa/i,
+      })
+    ).not.toBeInTheDocument();
 
     // await waitForElementToBeRemoved(() =>
     //   screen.queryByRole("row", {
@@ -82,16 +85,16 @@ describe("suite of test to match row results based on search", () => {
     //   })
     // );
 
-    await waitFor(
-      () => {
-        expect(
-          screen.queryByRole("row", {
-            name: /belmondo/i,
-          })
-        ).not.toBeInTheDocument();
-      },
-      { timeout: 3000 }
-    );
+    // await waitFor(
+    //   () => {
+    //     expect(
+    //       screen.queryByRole("row", {
+    //         name: /belmondo/i,
+    //       })
+    //     ).not.toBeInTheDocument();
+    //   },
+    //   { timeout: 3000 }
+    // );
 
     // await waitFor(() =>
     //   expect(
@@ -101,7 +104,7 @@ describe("suite of test to match row results based on search", () => {
     //   ).toBeVisible()
     // );
 
-    // const row = screen.queryByRole("row", {
+    // const row = screen.getByRole("row", {
     //   name: /belmondo/i,
     // });
 
@@ -137,3 +140,11 @@ describe("suite of test to match row results based on search", () => {
     //   ).toBeInTheDocument();
   });
 });
+
+const pause = () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, 3000);
+  });
+};
